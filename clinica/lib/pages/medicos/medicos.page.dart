@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'file:///C:/Projetos/Unit/clinica/clinica/lib/pages/especialidades/especialidades.edit.page.dart';
 import 'package:clinica/pages/medicos/medicos.edit.page.dart';
 import 'package:clinica/requests/models/medico.model.dart';
 import 'package:clinica/requests/urls.dart';
@@ -26,7 +25,7 @@ class _MedicosPage extends State<MedicosPage> {
         appBar: AppBar(
           title: Text("Médicos"),
         ),
-        body: ListaPrincipalWidget(),
+        body: listaPrincipalWidget(),
         floatingActionButton: FloatingButtons(
           actions: [
             FloatButtonItem(
@@ -97,7 +96,7 @@ class _MedicosPage extends State<MedicosPage> {
     );
   }
 
-  Widget ListaPrincipalWidget() {
+  Widget listaPrincipalWidget() {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -108,10 +107,10 @@ class _MedicosPage extends State<MedicosPage> {
 
               return Card(
                 child: ListTile(
-                  onLongPress: ()=> showDialogDeleteAction(item.Id) ,
+                  onLongPress: ()=> showDialogDeleteAction(item.id) ,
                   onTap: ()=>Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MedicosEditPage(
-                        id: item.Id,
+                        id: item.id,
                       ))),
                   title: item.buildTitle(context),
                   subtitle: item.buildSubtitle(context),

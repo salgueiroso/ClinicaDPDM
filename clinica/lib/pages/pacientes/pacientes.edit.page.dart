@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:clinica/requests/models/endereco.model.dart';
-import 'package:clinica/requests/models/especialidade.model.dart';
-import 'package:clinica/requests/models/medico.model.dart';
 import 'package:clinica/requests/models/paciente.model.dart';
 import 'package:clinica/requests/urls.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,9 +17,9 @@ class PacientesEditPage extends StatefulWidget {
 }
 
 class PacienteRetData {
-  final PacienteItem Paciente;
+  final PacienteItem paciente;
 
-  PacienteRetData({this.Paciente});
+  PacienteRetData({this.paciente});
 }
 
 class _PacientesEditPage extends State<PacientesEditPage> {
@@ -67,7 +65,7 @@ class _PacientesEditPage extends State<PacientesEditPage> {
           title:
               Text(widget.id == 0 ? "Paciente - Novo" : "Paciente - Alteração"),
         ),
-        body: FormularioWidget(),
+        body: formularioWidget(),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.save), onPressed: () => savePaciente()));
   }
@@ -78,33 +76,33 @@ class _PacientesEditPage extends State<PacientesEditPage> {
     PacienteItem paciente;
     if (widget.id == 0)
       paciente = PacienteItem(
-          Nome: nomeController.text,
-          DataNascimento: DateTime.parse(dataNascimentoController.text),
-          CPF: int.parse(cpfController.text),
-          RG: int.parse(rgController.text),
-          Telefone: int.parse(telefoneController.text),
-          Login: loginController.text,
-          Senha: senhaController.text,
-          Endereco: EnderecoItem(
-            Bairro: bairroController.text,
-            Rua: ruaController.text,
-            Numero: numeroController.text,
+          nome: nomeController.text,
+          dataNascimento: DateTime.parse(dataNascimentoController.text),
+          cpf: int.parse(cpfController.text),
+          rg: int.parse(rgController.text),
+          telefone: int.parse(telefoneController.text),
+          login: loginController.text,
+          senha: senhaController.text,
+          endereco: EnderecoItem(
+            bairro: bairroController.text,
+            rua: ruaController.text,
+            numero: numeroController.text,
           ));
     else
       paciente = PacienteItem(
-          Id: widget.id,
-          Nome: nomeController.text,
-          DataNascimento: DateTime.parse(dataNascimentoController.text),
-          CPF: int.parse(cpfController.text),
-          RG: int.parse(rgController.text),
-          Telefone: int.parse(telefoneController.text),
+          id: widget.id,
+          nome: nomeController.text,
+          dataNascimento: DateTime.parse(dataNascimentoController.text),
+          cpf: int.parse(cpfController.text),
+          rg: int.parse(rgController.text),
+          telefone: int.parse(telefoneController.text),
           //Login: loginController.text,
-          Senha: senhaController.text,
-          Endereco: EnderecoItem(
-            Id: int.parse(idEnderecoController.text),
-            Bairro: bairroController.text,
-            Rua: ruaController.text,
-            Numero: numeroController.text,
+          senha: senhaController.text,
+          endereco: EnderecoItem(
+            id: int.parse(idEnderecoController.text),
+            bairro: bairroController.text,
+            rua: ruaController.text,
+            numero: numeroController.text,
           ));
 
     var headers = <String, String>{
@@ -143,7 +141,7 @@ class _PacientesEditPage extends State<PacientesEditPage> {
   }
 
   Future<PacienteRetData> fetchData() async {
-    return PacienteRetData(Paciente: await getPaciente(widget.id));
+    return PacienteRetData(paciente: await getPaciente(widget.id));
   }
 
   Future<DateTime> selectDate(BuildContext _context, DateTime initial) async {
@@ -154,30 +152,30 @@ class _PacientesEditPage extends State<PacientesEditPage> {
         lastDate: DateTime.now());
   }
 
-  Widget FormularioWidget() {
+  Widget formularioWidget() {
     return Form(
         key: _formKey,
         child: FutureBuilder<PacienteRetData>(
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              nomeController.text = snapshot.data.Paciente?.Nome ?? "";
+              nomeController.text = snapshot.data.paciente?.nome ?? "";
               dataNascimentoController.text =
-                  snapshot.data.Paciente?.DataNascimento?.toIso8601String() ??
+                  snapshot.data.paciente?.dataNascimento?.toIso8601String() ??
                       "";
               telefoneController.text =
-                  snapshot.data.Paciente?.Telefone?.toString() ?? "";
-              rgController.text = snapshot.data.Paciente?.RG?.toString() ?? "";
+                  snapshot.data.paciente?.telefone?.toString() ?? "";
+              rgController.text = snapshot.data.paciente?.rg?.toString() ?? "";
               cpfController.text =
-                  snapshot.data.Paciente?.CPF?.toString() ?? "";
+                  snapshot.data.paciente?.cpf?.toString() ?? "";
               loginController.text =
-                  snapshot.data.Paciente?.Login?.toString() ?? "";
+                  snapshot.data.paciente?.login?.toString() ?? "";
               bairroController.text =
-                  snapshot.data.Paciente?.Endereco?.Bairro ?? "";
-              ruaController.text = snapshot.data.Paciente?.Endereco?.Rua ?? "";
+                  snapshot.data.paciente?.endereco?.bairro ?? "";
+              ruaController.text = snapshot.data.paciente?.endereco?.rua ?? "";
               numeroController.text =
-                  snapshot.data.Paciente?.Endereco?.Numero ?? "";
+                  snapshot.data.paciente?.endereco?.numero ?? "";
               idEnderecoController.text =
-                  snapshot.data.Paciente?.Endereco?.Id?.toString() ?? "";
+                  snapshot.data.paciente?.endereco?.id?.toString() ?? "";
 
               return Padding(
                   padding: EdgeInsets.all(16.0),
@@ -239,7 +237,7 @@ class _PacientesEditPage extends State<PacientesEditPage> {
                     TextFormField(
                       controller: dataNascimentoController,
                       onTap: () => selectDate(
-                              context, snapshot.data.Paciente?.DataNascimento)
+                              context, snapshot.data.paciente?.dataNascimento)
                           .then((value) => dataNascimentoController.text =
                               value.toIso8601String()),
                       keyboardType: TextInputType.datetime,

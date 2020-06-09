@@ -18,9 +18,9 @@ class DashboardPage extends StatefulWidget {
 }
 
 class ConsultasRetData {
-  final List<ConsultaItem> Consultas;
+  final List<ConsultaItem> consultas;
 
-  ConsultasRetData({this.Consultas});
+  ConsultasRetData({this.consultas});
 }
 
 class _DashboardPage extends State<DashboardPage> {
@@ -33,7 +33,7 @@ class _DashboardPage extends State<DashboardPage> {
         appBar: AppBar(
           title: Text('Clinica - Dashboard (Consultas)'),
         ),
-        body: ListaPrincipalWidget(),
+        body: listaPrincipalWidget(),
         floatingActionButton: FloatingButtons(
           actions: [
             FloatButtonItem(
@@ -75,23 +75,24 @@ class _DashboardPage extends State<DashboardPage> {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
           content:
               Text('Erro ao carregar consultas! ${response.reasonPhrase}')));
+      return null;
     }
   }
 
   Future<ConsultasRetData> fetchData() async {
     var consultas = await getProximasConsultas();
 
-    return ConsultasRetData(Consultas: consultas);
+    return ConsultasRetData(consultas: consultas);
   }
 
-  Widget ListaPrincipalWidget() {
+  Widget listaPrincipalWidget() {
     return FutureBuilder<ConsultasRetData>(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
-            itemCount: snapshot.data.Consultas.length,
+            itemCount: snapshot.data.consultas.length,
             itemBuilder: (context, index) {
-              final item = snapshot.data.Consultas[index];
+              final item = snapshot.data.consultas[index];
 
               return Card(
                 child: ListTile(

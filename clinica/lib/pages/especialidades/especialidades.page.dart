@@ -25,7 +25,7 @@ class _EspecialidadesPage extends State<EspecialidadesPage> {
         appBar: AppBar(
           title: Text("Especialidades"),
         ),
-        body: ProcumasConsultasWidget(),
+        body: procumasConsultasWidget(),
         floatingActionButton: FloatingButtons(
           actions: [
             FloatButtonItem(
@@ -96,7 +96,7 @@ class _EspecialidadesPage extends State<EspecialidadesPage> {
     );
   }
 
-  Widget ProcumasConsultasWidget() {
+  Widget procumasConsultasWidget() {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -107,10 +107,10 @@ class _EspecialidadesPage extends State<EspecialidadesPage> {
 
               return Card(
                 child: ListTile(
-                  onLongPress: ()=> showDialogDeleteAction(item.Id) ,
+                  onLongPress: ()=> showDialogDeleteAction(item.id) ,
                   onTap: ()=>Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => EspecialidadesEditPage(
-                        id: item.Id,
+                        id: item.id,
                       ))),
                   title: item.buildTitle(context),
                   subtitle: item.buildSubtitle(context),

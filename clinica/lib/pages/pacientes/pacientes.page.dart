@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'file:///C:/Projetos/Unit/clinica/clinica/lib/pages/especialidades/especialidades.edit.page.dart';
-import 'package:clinica/pages/medicos/medicos.edit.page.dart';
 import 'package:clinica/pages/pacientes/pacientes.edit.page.dart';
-import 'package:clinica/requests/models/medico.model.dart';
 import 'package:clinica/requests/models/paciente.model.dart';
 import 'package:clinica/requests/urls.dart';
 import 'package:clinica/widgets/floating_buttons.dart';
@@ -28,7 +25,7 @@ class _PacientesPage extends State<PacientesPage> {
         appBar: AppBar(
           title: Text("Pacientes"),
         ),
-        body: ListaPrincipalWidget(),
+        body: listaPrincipalWidget(),
         floatingActionButton: FloatingButtons(
           actions: [
             FloatButtonItem(
@@ -99,7 +96,7 @@ class _PacientesPage extends State<PacientesPage> {
     );
   }
 
-  Widget ListaPrincipalWidget() {
+  Widget listaPrincipalWidget() {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -110,10 +107,10 @@ class _PacientesPage extends State<PacientesPage> {
 
               return Card(
                 child: ListTile(
-                  onLongPress: ()=> showDialogDeleteAction(item.Id) ,
+                  onLongPress: ()=> showDialogDeleteAction(item.id) ,
                   onTap: ()=>Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => PacientesEditPage(
-                        id: item.Id,
+                        id: item.id,
                       ))).then((value) { setState(() {});}),
                   title: item.buildTitle(context),
                   subtitle: item.buildSubtitle(context),

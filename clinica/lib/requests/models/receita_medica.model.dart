@@ -3,26 +3,26 @@ import 'package:clinica/requests/models/consulta.model.dart';
 import 'package:flutter/material.dart';
 
 class ReceitaMedicaItem implements ListItem {
-  final int Id;
-  final String Descricao;
-  final DateTime Data;
-  final ConsultaItem Consulta;
+  final int id;
+  final String descricao;
+  final DateTime data;
+  final ConsultaItem consulta;
 
-  ReceitaMedicaItem({this.Id, this.Descricao, this.Data, this.Consulta});
+  ReceitaMedicaItem({this.id, this.descricao, this.data, this.consulta});
 
   factory ReceitaMedicaItem.fromJson(Map<String, dynamic> json) {
     return ReceitaMedicaItem(
-        Id: json['id'],
-        Descricao: json['descricao'],
-        Data: DateTime.parse(json['data'].toString()),
-        Consulta: ConsultaItem.fromJson(json['consulta']));
+        id: json['id'],
+        descricao: json['descricao'],
+        data: DateTime.parse(json['data'].toString()),
+        consulta: ConsultaItem.fromJson(json['consulta']));
   }
 
   Map<String, dynamic> toJson() => {
-        'id': Id,
-        'descricao': Descricao,
-        'data': Data.toIso8601String(),
-        'consulta': Consulta.toJson()
+        'id': id,
+        'descricao': descricao,
+        'data': data.toIso8601String(),
+        'consulta': consulta.toJson()
       };
 
   @override

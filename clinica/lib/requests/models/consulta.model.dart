@@ -5,36 +5,36 @@ import 'package:clinica/requests/models/receita_medica.model.dart';
 import 'package:flutter/material.dart';
 
 class ConsultaItem implements ListItem {
-  final int Id;
-  final DateTime DataHora;
-  final CoberturaItem Cobertura;
-  final PacienteItem Paciente;
-  final List<ReceitaMedicaItem> ReceitasMedicas;
+  final int id;
+  final DateTime dataHora;
+  final CoberturaItem cobertura;
+  final PacienteItem paciente;
+  final List<ReceitaMedicaItem> receitasMedicas;
 
   ConsultaItem(
-      {this.Id,
-      this.DataHora,
-      this.Cobertura,
-      this.Paciente,
-      this.ReceitasMedicas});
+      {this.id,
+      this.dataHora,
+      this.cobertura,
+      this.paciente,
+      this.receitasMedicas});
 
   factory ConsultaItem.fromJson(Map<String, dynamic> json) {
     return ConsultaItem(
-        Id: json['id'],
-        DataHora: DateTime.parse(json['dataHora'].toString()),
-        Cobertura: CoberturaItem.fromJson(json['cobertura']),
-        Paciente: PacienteItem.fromJson(json['paciente']),
-        ReceitasMedicas: (json['receitasMedicas'] as List)
+        id: json['id'],
+        dataHora: DateTime.parse(json['dataHora'].toString()),
+        cobertura: CoberturaItem.fromJson(json['cobertura']),
+        paciente: PacienteItem.fromJson(json['paciente']),
+        receitasMedicas: (json['receitasMedicas'] as List)
             .map((e) => ReceitaMedicaItem.fromJson(e))
             .toList());
   }
 
   Map<String, dynamic> toJson() => {
-        'id': Id,
-        'dataHora': DataHora.toIso8601String(),
-        'cobertura': Cobertura.toJson(),
-        'paciente': Paciente.toJson(),
-        'receitasMedicas': ReceitasMedicas.map((e) => e.toJson()).toList()
+        'id': id,
+        'dataHora': dataHora.toIso8601String(),
+        'cobertura': cobertura.toJson(),
+        'paciente': paciente.toJson(),
+        'receitasMedicas': receitasMedicas.map((e) => e.toJson()).toList()
       };
 
   Widget buildTitle(BuildContext context) => null;

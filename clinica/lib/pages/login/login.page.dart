@@ -30,7 +30,7 @@ class _LoginPage extends State<LoginPage> {
           title: Text('Autenticação'),
         ),
         body: Stack(
-          children: [FormularioWidget(), showCircularProgress()],
+          children: [formularioWidget(), showCircularProgress()],
         ));
   }
 
@@ -44,7 +44,7 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  Widget FormularioWidget() {
+  Widget formularioWidget() {
     return Form(
         key: _formKey,
         child: Padding(
@@ -129,13 +129,13 @@ class _LoginPage extends State<LoginPage> {
       _isLoading = true;
     });
 
-    String userId = "";
+    //String userId = "";
     try {
       var headers = <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       };
       var body = json.encode(
-          LoginItem(Login: loginController.text, Senha: senhaController.text));
+          LoginItem(login: loginController.text, senha: senhaController.text));
 
       var response = await post(URL_LOGIN, headers: headers, body: body);
 
@@ -161,7 +161,7 @@ class _LoginPage extends State<LoginPage> {
       }
     } catch (e) {
       _scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text('Erro ao salvar especialidade! ${e}')));
+          SnackBar(content: Text('Erro ao salvar especialidade! $e')));
     } finally {
       setState(() {
         _isLoading = false;

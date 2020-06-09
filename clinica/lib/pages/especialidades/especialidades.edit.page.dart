@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:clinica/requests/models/especialidade.model.dart';
 import 'package:clinica/requests/urls.dart';
-import 'package:clinica/widgets/floating_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -34,7 +33,7 @@ class _EspecialidadesEditPage extends State<EspecialidadesEditPage> {
         appBar: AppBar(
           title: Text(widget.id == 0 ? "Especialidade - Novo" : "Especialidade - Alteração"),
         ),
-        body: FormularioWidget(),
+        body: formularioWidget(),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.save), onPressed: () => saveEspecialdiade()));
   }
@@ -44,10 +43,10 @@ class _EspecialidadesEditPage extends State<EspecialidadesEditPage> {
 
     EspecialidadeItem espec;
     if (widget.id == 0)
-      espec = EspecialidadeItem(Nome: nomeController.text);
+      espec = EspecialidadeItem(nome: nomeController.text);
     else
       espec = EspecialidadeItem(
-          Id: widget.id, Nome: nomeController.text);
+          id: widget.id, nome: nomeController.text);
 
     var headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -88,11 +87,11 @@ class _EspecialidadesEditPage extends State<EspecialidadesEditPage> {
     }
   }
 
-  Widget FormularioWidget() {
+  Widget formularioWidget() {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          nomeController.text = snapshot.data.Nome ;
+          nomeController.text = snapshot.data.nome ;
           return Form(
             key: _formKey,
             child: Padding(

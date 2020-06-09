@@ -16,10 +16,10 @@ class MedicosEditPage extends StatefulWidget {
 }
 
 class MedicosRetData {
-  final List<DropdownMenuItem<int>> Especialidades;
-  final MedicoItem Medico;
+  final List<DropdownMenuItem<int>> especialidades;
+  final MedicoItem medico;
 
-  MedicosRetData({this.Especialidades, this.Medico});
+  MedicosRetData({this.especialidades, this.medico});
 }
 
 class _MedicosEditPage extends State<MedicosEditPage> {
@@ -44,7 +44,7 @@ class _MedicosEditPage extends State<MedicosEditPage> {
         appBar: AppBar(
           title: Text(widget.id == 0 ? "Médico - Novo" : "Médico - Alteração"),
         ),
-        body: FormularioWidget(),
+        body: formularioWidget(),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.save), onPressed: () => saveMedico()));
   }
@@ -55,15 +55,15 @@ class _MedicosEditPage extends State<MedicosEditPage> {
     MedicoItem medico;
     if (widget.id == 0)
       medico = MedicoItem(
-          Nome: nomeController.text,
-          CRM: crmController.text,
-          Especialidade: EspecialidadeItem(Id: especialidade, Nome: ''));
+          nome: nomeController.text,
+          crm: crmController.text,
+          especialidade: EspecialidadeItem(id: especialidade, nome: ''));
     else
       medico = MedicoItem(
-          Id: widget.id,
-          Nome: nomeController.text,
-          CRM: crmController.text,
-          Especialidade: EspecialidadeItem(Id: especialidade, Nome: ''));
+          id: widget.id,
+          nome: nomeController.text,
+          crm: crmController.text,
+          especialidade: EspecialidadeItem(id: especialidade, nome: ''));
 
     var headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -109,8 +109,8 @@ class _MedicosEditPage extends State<MedicosEditPage> {
 
       return _items
           .map((e) => DropdownMenuItem<int>(
-                child: Text(e.Nome),
-                value: e.Id,
+                child: Text(e.nome),
+                value: e.id,
               ))
           .toList();
     } else {
@@ -124,18 +124,18 @@ class _MedicosEditPage extends State<MedicosEditPage> {
 
   Future<MedicosRetData> fetchData() async {
     return MedicosRetData(
-        Especialidades: await getEspecialidades(),
-        Medico: await getMedico(widget.id));
+        especialidades: await getEspecialidades(),
+        medico: await getMedico(widget.id));
   }
 
-  Widget FormularioWidget() {
+  Widget formularioWidget() {
     return Form(
         key: _formKey,
         child: FutureBuilder<MedicosRetData>(
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              nomeController.text = snapshot.data.Medico?.Nome;
-              crmController.text = snapshot.data.Medico?.CRM;
+              nomeController.text = snapshot.data.medico?.nome;
+              crmController.text = snapshot.data.medico?.crm;
               return Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Column(children: [
@@ -166,8 +166,8 @@ class _MedicosEditPage extends State<MedicosEditPage> {
                           labelText: 'CRM *'),
                     ),
                     DropdownButtonFormField(
-                      value: snapshot.data.Medico?.Especialidade?.Id,
-                      items: snapshot.data.Especialidades,
+                      value: snapshot.data.medico?.especialidade?.id,
+                      items: snapshot.data.especialidades,
                       onChanged: (newVal) {
                         setState(() {
                           especialidade = newVal;

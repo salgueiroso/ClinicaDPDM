@@ -1,14 +1,14 @@
 class LoginItem {
-  final String Login;
-  final String Senha;
+  final String login;
+  final String senha;
 
-  LoginItem({this.Login, this.Senha});
+  LoginItem({this.login, this.senha});
 
   factory LoginItem.fromJson(Map<String, dynamic> json) =>
-      LoginItem(Login: json['login'], Senha: json['senha']);
+      LoginItem(login: json['login'], senha: json['senha']);
 
   Map<String, dynamic> toJson() => {
-        'login': Login,
-        'senha': Senha,
+        'login': login,
+        'senha': senha,
       };
 }

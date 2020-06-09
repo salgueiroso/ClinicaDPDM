@@ -1,4 +1,3 @@
-import 'package:clinica/pages/dashboard/dashboard.page.dart';
 import 'package:clinica/pages/login/login.page.dart';
 import 'package:flutter/material.dart';
 

@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:clinica/requests/models/cobertura.model.dart';
 import 'package:clinica/requests/models/consulta.model.dart';
-import 'package:clinica/requests/models/endereco.model.dart';
 import 'package:clinica/requests/models/especialidade.model.dart';
-import 'package:clinica/requests/models/medico.model.dart';
 import 'package:clinica/requests/models/paciente.model.dart';
 import 'package:clinica/requests/urls.dart';
+import 'package:clinica/widgets/dateformfield.dart';
+import 'package:clinica/widgets/timeformfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -21,16 +21,18 @@ class MarcacaoConsultaEditPage extends StatefulWidget {
 }
 
 class ConsultaRetData {
-  final ConsultaItem Consulta;
-  final List<PacienteItem> Pacientes;
-  final List<CoberturaItem> Coberturas;
-  final List<EspecialidadeItem> Especialidades;
+  final ConsultaItem consulta;
+  final List<PacienteItem> pacientes;
+  final List<CoberturaItem> coberturas;
+  final List<EspecialidadeItem> especialidades;
 
-  ConsultaRetData({this.Consulta, this.Pacientes, this.Coberturas, this.Especialidades});
+  ConsultaRetData(
+      {this.consulta, this.pacientes, this.coberturas, this.especialidades});
 }
 
 class _MarcacaoConsultaEditPage extends State<MarcacaoConsultaEditPage> {
-  final dataHoraController = TextEditingController();
+  final dataController = TextEditingController();
+  final timeController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -39,7 +41,8 @@ class _MarcacaoConsultaEditPage extends State<MarcacaoConsultaEditPage> {
   void dispose() {
     // TODO: implement dispose
 
-    dataHoraController.dispose();
+    dataController.dispose();
+    timeController.dispose();
 
     super.dispose();
   }
@@ -53,14 +56,10 @@ class _MarcacaoConsultaEditPage extends State<MarcacaoConsultaEditPage> {
               ? "Marcação de Consulta"
               : "Alterar Marcação de Consulta"),
         ),
-        body: FormularioWidget(),
+        body: formularioWidget(),
         floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.save),
-            //onPressed: () => savePaciente()
-        ));
+            child: Icon(Icons.save), onPressed: () => null));
   }
-
-
 
   Future<ConsultaItem> getConsulta(int id) async {
     if (widget.id != 0) {
@@ -133,7 +132,7 @@ class _MarcacaoConsultaEditPage extends State<MarcacaoConsultaEditPage> {
     var pacientes = await getPacientes();
     var coberturas = await getCoberturas();
     return ConsultaRetData(
-        Consulta: consulta, Pacientes: pacientes, Coberturas: coberturas);
+        consulta: consulta, pacientes: pacientes, coberturas: coberturas);
   }
 
   Future<DateTime> selectDate(BuildContext _context, DateTime initial) async {
@@ -144,17 +143,41 @@ class _MarcacaoConsultaEditPage extends State<MarcacaoConsultaEditPage> {
         lastDate: DateTime.now());
   }
 
-  Widget FormularioWidget() {
+  Widget formularioWidget() {
     return Form(
         key: _formKey,
         child: FutureBuilder<ConsultaRetData>(
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-
-
               return Padding(
                   padding: EdgeInsets.all(16.0),
                   child: ListView(children: [
+                    DateFormField(
+                      dataController,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.edit),
+                          hintText: 'Data de nascimento',
+                          labelText: 'Nascimento'),
+                      validator: (value) {
+                        if (value.isEmpty) return "Informe um nome válido";
+                        if (value.length <= 3)
+                          return "Nome deve ser maior que 3 caracteres";
+                        return null;
+                      },
+                    ),
+                    TimeFormField(
+                      timeController,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.edit),
+                          hintText: 'Data de nascimento',
+                          labelText: 'Nascimento'),
+                      validator: (value) {
+                        if (value.isEmpty) return "Informe um nome válido";
+                        if (value.length <= 3)
+                          return "Nome deve ser maior que 3 caracteres";
+                        return null;
+                      },
+                    )
                   ]));
             }
             return Center(
