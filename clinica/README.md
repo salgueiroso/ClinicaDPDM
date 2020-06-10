@@ -1,6 +1,6 @@
 # clinica
 
-Sistema de gestão de clínicas
+A new Flutter application.
 
 ## Getting Started
 

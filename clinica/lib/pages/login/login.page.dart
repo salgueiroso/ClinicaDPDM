@@ -22,6 +22,16 @@ class _LoginPage extends State<LoginPage> {
   final loginController = new TextEditingController();
   final senhaController = new TextEditingController();
 
+  FocusNode _focusNode;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.requestFocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +78,7 @@ class _LoginPage extends State<LoginPage> {
                 child: new TextFormField(
                   controller: loginController,
                   maxLines: 1,
+                  focusNode: _focusNode,
                   keyboardType: TextInputType.emailAddress,
                   autofocus: false,
                   decoration: new InputDecoration(

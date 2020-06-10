@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'package:clinica/requests/models/cobertura.model.dart';
 import 'package:clinica/requests/models/consulta.model.dart';
 import 'package:clinica/requests/models/especialidade.model.dart';
+import 'package:clinica/requests/models/medico.model.dart';
 import 'package:clinica/requests/models/paciente.model.dart';
 import 'package:clinica/requests/urls.dart';
-import 'package:clinica/widgets/dateformfield.dart';
-import 'package:clinica/widgets/timeformfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -20,31 +19,38 @@ class MarcacaoConsultaEditPage extends StatefulWidget {
   _MarcacaoConsultaEditPage createState() => _MarcacaoConsultaEditPage();
 }
 
-class ConsultaRetData {
-  final ConsultaItem consulta;
-  final List<PacienteItem> pacientes;
-  final List<CoberturaItem> coberturas;
-  final List<EspecialidadeItem> especialidades;
-
-  ConsultaRetData(
-      {this.consulta, this.pacientes, this.coberturas, this.especialidades});
-}
-
 class _MarcacaoConsultaEditPage extends State<MarcacaoConsultaEditPage> {
-  final dataController = TextEditingController();
-  final timeController = TextEditingController();
-
+  final especialidadeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  int _especialidadeSelecionada;
+  List<EspecialidadeItem> _especialidades;
+  int _medicoSelecionado;
+  List<MedicoItem> _medicos;
+
+  Widget _widgetEspecialidades;
 
   @override
   void dispose() {
     // TODO: implement dispose
 
-    dataController.dispose();
-    timeController.dispose();
+    especialidadeController.dispose();
 
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    _especialidades = [];
+    _medicos = [];
+
+    fetchEspecialidades().then((value) => setState(() {
+          _especialidades = value;
+          _widgetEspecialidades = GetWidgetEspecialidades();
+        }));
+
+    super.initState();
   }
 
   @override
@@ -61,130 +67,84 @@ class _MarcacaoConsultaEditPage extends State<MarcacaoConsultaEditPage> {
             child: Icon(Icons.save), onPressed: () => null));
   }
 
-  Future<ConsultaItem> getConsulta(int id) async {
-    if (widget.id != 0) {
-      var response = await get("$URL_CONSULTAS_LISTAR/$id");
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-        var item = new ConsultaItem.fromJson(jsonResponse);
-        return item;
-      } else {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content:
-                Text('Erro ao obter a consulta! ${response.reasonPhrase}')));
-      }
-    }
-    return ConsultaItem();
-  }
-
-  Future<List<PacienteItem>> getPacientes() async {
-    if (widget.id != 0) {
-      var response = await get("$URL_PACIENTES_LISTAR");
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-        var item =
-            jsonResponse.map((e) => new ConsultaItem.fromJson(e)).toList();
-
-        return item;
-      } else {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content:
-                Text('Erro ao obter pacientes! ${response.reasonPhrase}')));
-      }
-    }
-    return List<PacienteItem>();
-  }
-
-  Future<List<CoberturaItem>> getCoberturas() async {
-    if (widget.id != 0) {
-      var response = await get("$URL_COBERTURAS_LIST");
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-        var item =
-            jsonResponse.map((e) => new CoberturaItem.fromJson(e)).toList();
-
-        return item;
-      } else {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content:
-                Text('Erro ao obter pacientes! ${response.reasonPhrase}')));
-      }
-    }
-    return List<CoberturaItem>();
-  }
-
-  Future<List<DateTime>> getDHDisponiveis() async {
-    var response = await get("$URL_CONSULTAS_LISTAR/datasHorasLivres");
+  Future<List<EspecialidadeItem>> fetchEspecialidades() async {
+    var response = await get("$URL_ESPECIALIDADES_LISTAR");
     if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      var item = jsonResponse.map((e) => DateTime.parse(e.toString())).toList();
-      return item;
+      List jsonResponse = json.decode(response.body);
+      var _items =
+          jsonResponse.map((a) => new EspecialidadeItem.fromJson(a)).toList();
+
+      return _items;
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(
-              'Erro ao obter disponibilidades! ${response.reasonPhrase}')));
+          content:
+              Text('Erro ao obter especialidades! ${response.reasonPhrase}')));
     }
-    return List<DateTime>();
+
+    return null;
   }
 
-  Future<ConsultaRetData> fetchData() async {
-    var consulta = await getConsulta(widget.id);
-    var pacientes = await getPacientes();
-    var coberturas = await getCoberturas();
-    return ConsultaRetData(
-        consulta: consulta, pacientes: pacientes, coberturas: coberturas);
-  }
+  Future<List<MedicoItem>> fetchMedicosPorEspecialidade(
+      int especialidadeId) async {
+    especialidadeId = especialidadeId ?? 0;
+    var response =
+        await get("$URL_MEDICOS_LISTAR_POR_ESPECIALIDADE$especialidadeId");
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      var _items = jsonResponse.map((a) => new MedicoItem.fromJson(a)).toList();
 
-  Future<DateTime> selectDate(BuildContext _context, DateTime initial) async {
-    return await showDatePicker(
-        context: _context,
-        initialDate: initial ?? DateTime.now(),
-        firstDate: DateTime(DateTime.now().year - 100),
-        lastDate: DateTime.now());
+      _items.insert(0, MedicoItem(id: null, nome: ''));
+
+      return _items;
+    } else {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Erro ao obter medicos! ${response.reasonPhrase}')));
+    }
+
+    return null;
   }
 
   Widget formularioWidget() {
     return Form(
         key: _formKey,
-        child: FutureBuilder<ConsultaRetData>(
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: ListView(children: [
-                    DateFormField(
-                      dataController,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.edit),
-                          hintText: 'Data de nascimento',
-                          labelText: 'Nascimento'),
-                      validator: (value) {
-                        if (value.isEmpty) return "Informe um nome válido";
-                        if (value.length <= 3)
-                          return "Nome deve ser maior que 3 caracteres";
-                        return null;
-                      },
-                    ),
-                    TimeFormField(
-                      timeController,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.edit),
-                          hintText: 'Data de nascimento',
-                          labelText: 'Nascimento'),
-                      validator: (value) {
-                        if (value.isEmpty) return "Informe um nome válido";
-                        if (value.length <= 3)
-                          return "Nome deve ser maior que 3 caracteres";
-                        return null;
-                      },
-                    )
-                  ]));
-            }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-          future: fetchData(),
-        ));
+        child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: ListView(children: [
+              _widgetEspecialidades,
+              DropdownButtonFormField<int>(
+                items: _medicos
+                    .map((e) => DropdownMenuItem<int>(
+                          child: Text(e.nome),
+                          value: e.id,
+                        ))
+                    .toList(),
+                value: _medicoSelecionado,
+                onChanged: (v) => setState(() {
+                  _medicoSelecionado = v;
+                }),
+                decoration: const InputDecoration(
+                    hintText: 'Informe o médico', labelText: 'Médico *'),
+              ),
+            ])));
+  }
+
+  Widget GetWidgetEspecialidades() {
+    return DropdownButtonFormField(
+      items: _especialidades
+          .map((e) => DropdownMenuItem<int>(
+                child: Text(e.nome),
+                value: e.id,
+              ))
+          .toList(),
+      value: _especialidadeSelecionada,
+      onChanged: (v) {
+        fetchMedicosPorEspecialidade(v).then((value) => setState(() {
+              _medicos = value;
+              _especialidadeSelecionada = v;
+            }));
+      },
+      decoration: const InputDecoration(
+          hintText: 'Informe a especialidade', labelText: 'Especialidade *'),
+    );
   }
 }

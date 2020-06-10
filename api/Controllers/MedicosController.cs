@@ -21,7 +21,7 @@ namespace api.Controllers
             _ctx = ctx;
         }
 
-        [HttpGet]
+/*         [HttpGet]
         public IActionResult Get()
         {
             var result = _ctx.Medicos
@@ -30,13 +30,13 @@ namespace api.Controllers
                 .Select(e => new MedicoDTO(e))
                 .ToList();
             return Ok(result);
-        }
+        } */
 
         [HttpGet]
-        public IActionResult GetPorEspecialidade([FromQuery] int idEspecialidade)
+        public IActionResult GetPorEspecialidade([FromQuery] int? idEspecialidade = null)
         {
             var result = _ctx.Medicos
-                .Where(x => x.EspecialidadeId == idEspecialidade)
+                .Where(x => idEspecialidade == null || x.EspecialidadeId == idEspecialidade)
                 .OrderBy(x => x.Nome)
                 .ToList()
                 .Select(e => new MedicoDTO(e))

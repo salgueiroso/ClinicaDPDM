@@ -1,3 +1,4 @@
+import 'package:clinica/pages/consultas/marcar.edit.page.dart';
 import 'package:clinica/pages/login/login.page.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,8 @@ class ClinicaApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: MarcacaoConsultaEditPage(),
+      //home: LoginPage(),
     );
   }
 }

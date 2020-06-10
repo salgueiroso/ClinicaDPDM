@@ -74,7 +74,7 @@ class DateFormField extends StatefulWidget {
       : super(key: key);
 
   final InputDecoration decoration;
-  final FormFieldValidator<String> validator;
+  final FormFieldValidator<DateTime> validator;
   final TextEditingController controller;
   final DateTime initialDate;
   final DateTime firstDate;
@@ -85,9 +85,21 @@ class DateFormField extends StatefulWidget {
 }
 
 class _DateFormField extends State<DateFormField> {
-  DateTime selectedDate;
-
   static const maxLength = 10;
+
+  DateTime selectedDate;
+  FormFieldValidator<String> _validator;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _validator = (valueStr) {
+      var df = DateFormat('dd/MM/yyyy');
+      var data = df.parse(valueStr);
+      return widget.validator?.call(data);
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +109,7 @@ class _DateFormField extends State<DateFormField> {
           TextFormField(
             controller: widget.controller,
             decoration: widget.decoration,
-            validator: widget.validator,
+            validator: _validator,
             keyboardType: TextInputType.number,
             inputFormatters: [
               LengthLimitingTextInputFormatter(maxLength),

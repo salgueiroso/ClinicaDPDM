@@ -45,7 +45,7 @@ class TimeFormField extends StatefulWidget {
       : super(key: key);
 
   final InputDecoration decoration;
-  final FormFieldValidator<String> validator;
+  final FormFieldValidator<TimeOfDay> validator;
   final TextEditingController controller;
 
   @override
@@ -57,6 +57,8 @@ class _TimeFormField extends State<TimeFormField> {
 
   FocusNode focus;
 
+  FormFieldValidator<String> _validator;
+
   static const maxLength = 5;
 
   @override
@@ -65,6 +67,11 @@ class _TimeFormField extends State<TimeFormField> {
 
     this.focus = new FocusNode();
     this.focus.addListener(_handleFocusChange);
+
+    _validator = (valueStr) {
+      var time = valueStr.toTimeOfDay();
+      return widget.validator?.call(time);
+    };
   }
 
   void _handleFocusChange() {
@@ -94,7 +101,7 @@ class _TimeFormField extends State<TimeFormField> {
             focusNode: focus,
             controller: widget.controller,
             decoration: widget.decoration,
-            validator: widget.validator,
+            validator: _validator,
             keyboardType: TextInputType.number,
             inputFormatters: [
               LengthLimitingTextInputFormatter(maxLength),
@@ -137,11 +144,21 @@ class _TimeFormField extends State<TimeFormField> {
 extension TimeTextEditingControllerExtension on TextEditingController {
 
 
-  TimeOfDay get asTimeOfDay {
+  TimeOfDay get asTimeOfDay => this.text.toTimeOfDay();
+
+  set fromTimeOfDay(TimeOfDay hr) {
+    text = hr.toString();
+  }
+}
+
+extension TimeStringExtension on String {
+
+  TimeOfDay toTimeOfDay(){
+
     var df = DateFormat(timeFmt);
 
     var matcher = RegExp(timeExpression);
-    var match = matcher.firstMatch(text.replaceAll(r'[^\d]+', ''));
+    var match = matcher.firstMatch(this.replaceAll(r'[^\d]+', ''));
 
     var _text = '';
 
@@ -159,8 +176,5 @@ extension TimeTextEditingControllerExtension on TextEditingController {
       return null;
   }
 
-  set fromTimeOfDay(TimeOfDay hr) {
-    var df = DateFormat(timeFmt);
-    text = df.format(DateTime(0, 0, 0, hr.hour, hr.minute));
-  }
+
 }
